@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.constants as C
+from numpy.lib.function_base import meshgrid
 from scipy.signal import find_peaks
 from mpl_toolkits.mplot3d import Axes3D
+
 
 def Termopar(x):
     return -0.0005*x**3 + 0.0068*x**2 + 18.366*x + 1.968
@@ -276,19 +277,34 @@ plt.tick_params(labelsize = 12.5)
 plt.grid()
 
 def Solucion1(x, t):
-    return 100*np.exp(-np.sqrt(w/(2*67))*x)*(np.cos(w*t - np.sqrt(w/(2*D))*x)) + 150 - 0.5*x
+    return 100*np.exp(-np.sqrt(w/(2*67))*x)*(np.cos(w*t - np.sqrt(w/(2*D))*x)) + 150 - 0.01*x
 
-tau = 10*60
+tau = 5*60
 
 w = 2*np.pi/tau
 
-valort = np.linspace(0, 250, 100000)
+valorx = np.linspace(0, 250, 1000)
 
 plt.figure(figsize=(8, 8))
-plt.plot(valort/60, Solucion1(valort, 2), 'k--')
-plt.xlabel(r'$t$ (min)', fontsize = 15)
+plt.plot(valorx/60, Solucion1(valorx, 2), 'k--')
+plt.xlabel(r'$x$ (m)', fontsize = 15)
 plt.ylabel(r'$T$ (°C)', fontsize = 15)
 plt.tick_params(labelsize = 12.5)
 plt.grid()
+
+valorx = np.linspace(0, 100, 1000)
+
+fig1 = plt.figure(figsize = (8, 8))
+ax = Axes3D(fig1)
+X = valorx
+Y = valorx
+X, Y = np.meshgrid(X, Y)
+Z = 100*np.exp(-np.sqrt(w/(2*67))*X)*(np.cos(w*Y - np.sqrt(w/(2*D))*X)) + 150 - 0.01*X
+ax.plot_surface(X, Y, Z)
+ax.set_xlabel(r'$x$ (cm)', fontsize = 15)
+ax.set_ylabel(r'$t$ (min)', fontsize = 15)
+ax.set_zlabel(r'$T$ (°C)', fontsize = 15)
+ax.grid()
+
 
 plt.show()
